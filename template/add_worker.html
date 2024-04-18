@@ -1,0 +1,542 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Worker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url("{% static 'img/worker.jpg' %}");
+            background-size:cover;
+            background-position: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .form-container {
+            background-color: rgba(225, 225, 255,0.5);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 90%; /* Adjusted width */
+            max-width: 500px; /* Max width */
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: calc(100% - 22px); /* Adjusted width */
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box; /* Include padding and border in width calculation */
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        .submit-button {
+            width: 100%; /* Full width button */
+            background-color: #007bff;
+            color: #fff;
+            padding: 12px 0; /* Adjusted padding */
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-button:hover {
+            background-color: #0056b3;
+        }
+
+        .salary-container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #salary_frequency,
+        #salary_amount {
+            width: calc(45% - 11px); /* Adjusted width */
+        }
+        
+      .dashboard-container {
+        max-width: 1200px;
+        margin: 20px auto;
+        background-color: #fff;
+        border-radius: 20px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      h2 {
+        color: #000000;
+      }
+
+      .header-links a {
+        color: #007bff;
+        text-decoration: none;
+        margin-left: 20px;
+      }
+
+      .card {
+        border: none;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .card-header {
+        background-color: #007bff;
+        color: #fff;
+        border-bottom: none;
+      }
+
+      .card-body {
+        padding: 20px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+
+      th,
+      td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+
+      th {
+        background-color: #007bff;
+        color: #fff;
+      }
+
+      .client-request-image {
+        max-width: 100px;
+        max-height: 100px;
+        object-fit: cover;
+      }
+      /* The Modal */
+      /* The Modal */
+      .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        right: 10px; /* Adjusted position */
+        top: 10px; /* Adjusted position */
+      }
+      
+      /* Modal Content */
+      .modal-content {
+        background-color: #fefefe;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 200px; /* Adjusted width */
+      }
+      
+      /* The Close Button */
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+      
+      .close:hover,
+      .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      
+
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Add Worker</h2>
+        {% comment %} <form method="post" class="worker-form" onsubmit="return validateForm()">
+            {% csrf_token %} {% endcomment %}
+            <form id="worker-form" action="{% url 'add_worker' %}" method="post" enctype="multipart/form-data">
+
+                {% csrf_token %}
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+                <span id="name-error" class="error-message"></span>
+            </div>
+
+            <div class="form-group">
+                <label>Job Role:</label>
+                <label><input type="radio" name="job_role" value="Brick Mason"> Brick Mason</label>
+                <label><input type="radio" name="job_role" value="Tile Worker"> Tile Worker</label>
+                <label><input type="radio" name="job_role" value="Helper"> Helper</label>
+                <label><input type="radio" name="job_role" value="Painter"> Painter</label>
+                <label><input type="radio" name="job_role" value="Plumber"> Plumber</label>
+                <label><input type="radio" name="job_role" value="Electrician"> Electrician</label>
+                <label><input type="radio" name="job_role" value="Carpenter"> Carpenter</label>
+            </div>
+
+            <div class="form-group">
+                <label for="state">State:</label>
+                <div class="form-outline form-white">
+<select id="state" name="state">
+{% comment %} <option value="" select disabled>Select your State</option> {% endcomment %}
+<option value="Andhra Pradesh">Enter your State</option>
+<option value="Andhra Pradesh">Andhra Pradesh</option>
+<option value="Arunachal Pradesh">Arunachal Pradesh</option>
+<option value="Assam">Assam</option>
+<option value="Bihar">Bihar</option>
+<option value="Chhattisgarh">Chhattisgarh</option>
+<option value="Goa">Goa</option>
+<option value="Gujarat">Gujarat</option>
+<option value="Haryana">Haryana</option>
+<option value="Himachal Pradesh">Himachal Pradesh</option>
+<option value="Jharkhand">Jharkhand</option>
+<option value="Karnataka">Karnataka</option>
+<option value="Kerala">Kerala</option>
+<option value="Madhya Pradesh">Madhya Pradesh</option>
+<option value="Maharashtra">Maharashtra</option>
+<option value="Manipur">Manipur</option>
+<option value="Meghalaya">Meghalaya</option>
+<option value="Mizoram">Mizoram</option>
+<option value="Nagaland">Nagaland</option>
+<option value="Odisha">Odisha</option>
+<option value="Punjab">Punjab</option>
+<option value="Rajasthan">Rajasthan</option>
+<option value="Sikkim">Sikkim</option>
+<option value="Tamil Nadu">Tamil Nadu</option>
+<option value="Telangana">Telangana</option>
+<option value="Tripura">Tripura</option>
+<option value="Uttar Pradesh">Uttar Pradesh</option>
+<option value="Uttarakhand">Uttarakhand</option>
+<option value="West Bengal">West Bengal</option>
+<!-- Add more states as needed -->
+</select>
+                  </div><br>
+                  <div class="mb-4 pb-2">
+                    <div class="form-outline form-white">
+                      <label for="district">Select District:</label>
+                      <select id="district" name="district">
+                      </select>
+                      <script>
+                        const stateDropdown = document.getElementById('state');
+                        const districtDropdown = document.getElementById('district');
+                
+                        // Define an object that maps states to their corresponding districts
+                        const stateDistricts = {
+                            'Andhra Pradesh': ['Anantapur', 'Chittoor', 'Guntur', 'Kadapa', 'Krishna', 'Kurnool', 'Nellore', 'Prakasam', 'Srikakulam', 'Visakhapatnam', 'Vizianagaram', 'West Godavari'],
+                            'Arunachal Pradesh': ['Anjaw', 'Changlang', 'Dibang Valley', 'East Kameng', 'East Siang', 'Kamle', 'Kra Daadi', 'Kurung Kumey', 'Lepa Rada', 'Lohit', 'Longding', 'Lower Dibang Valley', 'Lower Siang', 'Lower Subansiri', 'Namsai', 'Pakke Kessang', 'Papum Pare', 'Shi Yomi', 'Siang', 'Tawang', 'Tirap', 'Upper Siang', 'Upper Subansiri', 'West Kameng', 'West Siang'],
+                            'Assam': ['Baksa', 'Barpeta', 'Biswanath', 'Bongaigaon', 'Cachar', 'Charaideo', 'Chirang', 'Darrang', 'Dhemaji', 'Dhubri', 'Dibrugarh', 'Dima Hasao', 'Goalpara', 'Golaghat', 'Hailakandi', 'Hojai', 'Jorhat', 'Kamrup', 'Kamrup Metropolitan', 'Karbi Anglong', 'Karimganj', 'Kokrajhar', 'Lakhimpur', 'Majuli', 'Morigaon', 'Nagaon', 'Nalbari', 'Sivasagar', 'Sonitpur', 'South Salmara-Mankachar', 'Tinsukia', 'Udalguri', 'West Karbi Anglong'],
+                            'Bihar': ['Araria', 'Arwal', 'Aurangabad', 'Banka', 'Begusarai', 'Bhagalpur', 'Bhojpur', 'Buxar', 'Darbhanga', 'East Champaran', 'Gaya', 'Gopalganj', 'Jamui', 'Jehanabad', 'Kaimur', 'Katihar', 'Khagaria', 'Kishanganj', 'Lakhisarai', 'Madhepura', 'Madhubani', 'Munger', 'Muzaffarpur', 'Nalanda', 'Nawada', 'Patna', 'Purnia', 'Rohtas', 'Saharsa', 'Samastipur', 'Saran', 'Sheikhpura', 'Sheohar', 'Sitamarhi', 'Siwan', 'Supaul', 'Vaishali', 'West Champaran'],
+                            'Chhattisgarh': ['Balod', 'Baloda Bazar', 'Balrampur', 'Bastar', 'Bemetara', 'Bijapur', 'Bilaspur', 'Dantewada', 'Dhamtari', 'Durg', 'Gariaband', 'Gaurela-Pendra-Marwahi', 'Janjgir-Champa', 'Jashpur', 'Kabirdham', 'Kanker', 'Kondagaon', 'Korba', 'Koriya', 'Mahasamund', 'Mungeli', 'Narayanpur', 'Raigarh', 'Raipur', 'Rajnandgaon', 'Sukma', 'Surajpur', 'Surguja'],
+                            'Goa': ['North Goa', 'South Goa'],
+                            'Gujarat': ['Ahmedabad', 'Amreli', 'Anand', 'Aravalli', 'Banaskantha', 'Bharuch', 'Bhavnagar', 'Botad', 'Chhota Udaipur', 'Dahod', 'Dang', 'Devbhoomi Dwarka', 'Gandhinagar', 'Gir Somnath', 'Jamnagar', 'Junagadh', 'Kheda', 'Kutch', 'Mahisagar', 'Mehsana', 'Morbi', 'Narmada', 'Navsari', 'Panchmahal', 'Patan', 'Porbandar', 'Rajkot', 'Sabarkantha', 'Surat', 'Surendranagar', 'Tapi', 'Vadodara', 'Valsad'],
+                            'Haryana': ['Ambala', 'Bhiwani', 'Charkhi Dadri', 'Faridabad', 'Fatehabad', 'Gurugram', 'Hisar', 'Jhajjar', 'Jind', 'Kaithal', 'Karnal', 'Kurukshetra', 'Mahendragarh', 'Nuh', 'Palwal', 'Panchkula', 'Panipat', 'Rewari', 'Rohtak', 'Sirsa', 'Sonipat', 'Yamunanagar'],
+                            'Himachal Pradesh': ['Bilaspur', 'Chamba', 'Hamirpur', 'Kangra', 'Kinnaur', 'Kullu', 'Lahaul and Spiti', 'Mandi', 'Shimla', 'Sirmaur', 'Solan', 'Una'],
+                            'Jharkhand': ['Bokaro', 'Chatra', 'Deoghar', 'Dhanbad', 'Dumka', 'East Singhbhum', 'Garhwa', 'Giridih', 'Godda', 'Gumla', 'Hazaribagh', 'Jamtara', 'Khunti', 'Koderma', 'Latehar', 'Lohardaga', 'Pakur', 'Palamu', 'Ramgarh', 'Ranchi', 'Sahebganj', 'Seraikela-Kharsawan', 'Simdega', 'West Singhbhum'],
+                            'Karnataka': ['Bagalkot', 'Ballari', 'Belagavi', 'Bengaluru Rural', 'Bengaluru Urban', 'Bidar', 'Chamarajanagar', 'Chikkaballapur', 'Chikkamagaluru', 'Chitradurga', 'Dakshina Kannada', 'Davanagere', 'Dharwad', 'Gadag', 'Hassan', 'Haveri', 'Kalaburagi', 'Kodagu', 'Kolar', 'Koppal', 'Mandya', 'Mysuru', 'Raichur', 'Ramanagara', 'Shivamogga', 'Tumakuru', 'Udupi', 'Uttara Kannada', 'Vijayapura', 'Yadgir'],
+                            'Kerala': ['Alappuzha', 'Ernakulam', 'Idukki', 'Kannur', 'Kasaragod', 'Kollam', 'Kottayam', 'Kozhikode', 'Malappuram', 'Palakkad', 'Pathanamthitta', 'Thiruvananthapuram', 'Thrissur', 'Wayanad'],
+                            'Madhya Pradesh': ['Agar Malwa', 'Alirajpur', 'Anuppur', 'Ashoknagar', 'Balaghat', 'Barwani', 'Betul', 'Bhind', 'Bhopal', 'Burhanpur', 'Chhatarpur', 'Chhindwara', 'Damoh', 'Datia', 'Dewas', 'Dhar', 'Dindori', 'Guna', 'Gwalior', 'Harda', 'Hoshangabad', 'Indore', 'Jabalpur', 'Jhabua', 'Katni', 'Khandwa', 'Khargone', 'Mandla', 'Mandsaur', 'Morena', 'Narsinghpur', 'Neemuch', 'Panna', 'Raisen', 'Rajgarh', 'Ratlam', 'Rewa', 'Sagar', 'Satna', 'Sehore', 'Seoni', 'Shahdol', 'Shajapur', 'Sheopur', 'Shivpuri', 'Sidhi', 'Singrauli', 'Tikamgarh', 'Ujjain', 'Umaria', 'Vidisha'],
+                            'Maharashtra': ['Ahmednagar', 'Akola', 'Amravati', 'Aurangabad', 'Beed', 'Bhandara', 'Buldhana', 'Chandrapur', 'Dhule', 'Gadchiroli', 'Gondia', 'Hingoli', 'Jalgaon', 'Jalna', 'Kolhapur', 'Latur', 'Mumbai City', 'Mumbai Suburban', 'Nagpur', 'Nanded', 'Nandurbar', 'Nashik', 'Osmanabad', 'Palghar', 'Parbhani', 'Pune', 'Raigad', 'Ratnagiri', 'Sangli', 'Satara', 'Sindhudurg', 'Solapur', 'Thane', 'Wardha', 'Washim', 'Yavatmal'],
+                            'Manipur': ['Bishnupur', 'Chandel', 'Churachandpur', 'Imphal East', 'Imphal West', 'Jiribam', 'Kakching', 'Kamjong', 'Kangpokpi', 'Noney', 'Pherzawl', 'Senapati', 'Tamenglong', 'Tengnoupal', 'Thoubal', 'Ukhrul'],
+                            'Meghalaya': ['East Garo Hills', 'East Jaintia Hills', 'East Khasi Hills', 'North Garo Hills', 'Ri-Bhoi', 'South Garo Hills', 'South West Garo Hills', 'South West Khasi Hills', 'West Garo Hills', 'West Jaintia Hills', 'West Khasi Hills'],
+                            'Mizoram': ['Aizawl', 'Champhai', 'Hnahthial', 'Khawzawl', 'Kolasib', 'Lawngtlai', 'Lunglei', 'Mamit', 'Saiha', 'Saitual', 'Serchhip'],
+                            'Nagaland': ['Dimapur', 'Kiphire', 'Kohima', 'Longleng', 'Mokokchung', 'Mon', 'Peren', 'Phek', 'Tuensang', 'Wokha', 'Zunheboto'],
+                            'Odisha': ['Angul', 'Balangir', 'Balasore', 'Bargarh', 'Bhadrak', 'Boudh', 'Cuttack', 'Deogarh', 'Dhenkanal', 'Gajapati', 'Ganjam', 'Jagatsinghpur', 'Jajpur', 'Jharsuguda', 'Kalahandi', 'Kandhamal', 'Kendrapara', 'Kendujhar', 'Khordha', 'Koraput', 'Malkangiri', 'Mayurbhanj', 'Nabarangpur', 'Nayagarh', 'Nuapada', 'Puri', 'Rayagada', 'Sambalpur', 'Subarnapur', 'Sundargarh'],
+                            'Punjab': ['Amritsar', 'Barnala', 'Bathinda', 'Faridkot', 'Fatehgarh Sahib', 'Fazilka', 'Ferozepur', 'Gurdaspur', 'Hoshiarpur', 'Jalandhar', 'Kapurthala', 'Ludhiana', 'Mansa', 'Moga', 'Muktsar', 'Pathankot', 'Patiala', 'Rupnagar', 'Sahibzada Ajit Singh Nagar', 'Sangrur', 'Tarn Taran'],
+                            'Rajasthan': ['Ajmer', 'Alwar', 'Banswara', 'Baran', 'Barmer', 'Bharatpur', 'Bhilwara', 'Bikaner', 'Bundi', 'Chittorgarh', 'Churu', 'Dausa', 'Dholpur', 'Dungarpur', 'Hanumangarh', 'Jaipur', 'Jaisalmer', 'Jalore', 'Jhalawar', 'Jhunjhunu', 'Jodhpur', 'Karauli', 'Kota', 'Nagaur', 'Pali', 'Pratapgarh', 'Rajsamand', 'Sawai Madhopur', 'Sikar', 'Sirohi', 'Sri Ganganagar', 'Tonk', 'Udaipur'],
+                            'Sikkim': ['East Sikkim', 'North Sikkim', 'South Sikkim', 'West Sikkim'],
+                            'Tamil Nadu': ['Ariyalur', 'Chengalpattu', 'Chennai', 'Coimbatore', 'Cuddalore', 'Dharmapuri', 'Dindigul', 'Erode', 'Kallakurichi', 'Kanchipuram', 'Kanyakumari', 'Karur', 'Krishnagiri', 'Madurai', 'Mayiladuthurai', 'Nagapattinam', 'Namakkal', 'Nilgiris', 'Perambalur', 'Pudukkottai', 'Ramanathapuram', 'Ranipet', 'Salem', 'Sivaganga', 'Tenkasi', 'Thanjavur', 'Theni', 'Thoothukudi', 'Tiruchirappalli', 'Tirunelveli', 'Tirupathur', 'Tiruppur', 'Tiruvallur', 'Tiruvannamalai', 'Tiruvarur', 'Vellore', 'Viluppuram', 'Virudhunagar'],
+                            'Telangana': ['Adilabad', 'Bhadradri Kothagudem', 'Hyderabad', 'Jagtial', 'Jangaon', 'Jayashankar Bhupalapally', 'Jogulamba Gadwal', 'Kamareddy', 'Karimnagar', 'Khammam', 'Komaram Bheem Asifabad', 'Mahabubabad', 'Mahabubnagar', 'Mancherial', 'Medak', 'Medchal-Malkajgiri', 'Nagarkurnool', 'Nalgonda', 'Narayanpet', 'Nirmal', 'Nizamabad', 'Peddapalli', 'Rajanna Sircilla', 'Rangareddy', 'Sangareddy', 'Siddipet', 'Suryapet', 'Vikarabad', 'Wanaparthy', 'Warangal Rural', 'Warangal Urban', 'Yadadri Bhuvanagiri'],
+                            'Tripura': ['Dhalai', 'Gomati', 'Khowai', 'North Tripura', 'Sipahijala', 'South Tripura', 'Unakoti', 'West Tripura'],
+                            'Uttar Pradesh': ['Agra', 'Aligarh', 'Ambedkar Nagar', 'Amethi', 'Amroha', 'Auraiya', 'Azamgarh', 'Baghpat', 'Bahraich', 'Ballia', 'Balrampur', 'Banda', 'Barabanki', 'Bareilly', 'Basti', 'Bhadohi', 'Bijnor', 'Budaun', 'Bulandshahr', 'Chandauli', 'Chitrakoot', 'Deoria', 'Etah', 'Etawah', 'Faizabad', 'Farrukhabad', 'Fatehpur', 'Firozabad', 'Gautam Buddha Nagar', 'Ghaziabad', 'Ghazipur', 'Gonda', 'Gorakhpur', 'Hamirpur', 'Hapur', 'Hardoi', 'Hathras', 'Jalaun', 'Jaunpur', 'Jhansi', 'Kannauj', 'Kanpur Dehat', 'Kanpur Nagar', 'Kasganj', 'Kaushambi', 'Kushinagar', 'Lakhimpur Kheri', 'Lalitpur', 'Lucknow', 'Maharajganj', 'Mahoba', 'Mainpuri', 'Mathura', 'Mau', 'Meerut', 'Mirzapur', 'Moradabad', 'Muzaffarnagar', 'Pilibhit', 'Pratapgarh', 'Prayagraj', 'Rae Bareli', 'Rampur', 'Saharanpur', 'Sambhal', 'Sant Kabir Nagar', 'Shahjahanpur', 'Shamli', 'Shravasti', 'Siddharthnagar', 'Sitapur', 'Sonbhadra', 'Sultanpur', 'Unnao', 'Varanasi'],
+                            'Uttarakhand': ['Almora', 'Bageshwar', 'Chamoli', 'Champawat', 'Dehradun', 'Haridwar', 'Nainital', 'Pauri Garhwal', 'Pithoragarh', 'Rudraprayag', 'Tehri Garhwal', 'Udham Singh Nagar', 'Uttarkashi'],
+                            'West Bengal': ['Alipurduar', 'Bankura', 'Birbhum', 'Cooch Behar', 'Dakshin Dinajpur', 'Darjeeling', 'Hooghly', 'Howrah', 'Jalpaiguri', 'Jhargram', 'Kalimpong', 'Kolkata', 'Malda', 'Murshidabad', 'Nadia', 'North 24 Parganas', 'Paschim Bardhaman', 'Paschim Medinipur', 'Purba Bardhaman', 'Purba Medinipur', 'Purulia', 'South 24 Parganas', 'Uttar Dinajpur']
+                        };
+                
+                        // Event listener to populate districts when a state is selected
+                        stateDropdown.addEventListener('change', function() {
+                            const selectedState = stateDropdown.value;
+                            const districts = stateDistricts[selectedState];
+                            populateDistrictsDropdown(districts);
+                        });
+                
+                        // Function to populate the district dropdown
+                        function populateDistrictsDropdown(districts) {
+                            // Clear existing options
+                            districtDropdown.innerHTML = '';
+                
+                            // Add default option
+                            const defaultOption = document.createElement('option');
+                            defaultOption.text = 'Select District';
+                            defaultOption.value = '';
+                            districtDropdown.appendChild(defaultOption);
+                
+                            // Add district options
+                            if (districts) {
+                                for (const district of districts) {
+                                    const option = document.createElement('option');
+                                    option.text = district;
+                                    option.value = district;
+                                    districtDropdown.appendChild(option);
+                                }
+                            }
+                        }
+                    </script>
+                    </div>
+                  </div>
+<br>
+<div class="form-group">
+    <label for="aadhar_document">Upload Aadhar Document:</label>
+    <input type="file" id="aadhar_document" name="aadhar_document" accept=".pdf, .doc, .docx, .jpg, .jpeg, .png" required>
+    <span id="aadhar-document-error" class="error-message"></span>
+</div>
+            <div class="form-group">
+                <label for="mobile_number">Mobile Number:</label>
+                <input type="text" id="mobile_number" name="mobile_number" value="{{ user.mobile }}">
+                <div id="phone-error" class="error-message"></div>
+            </div>
+            <div class="form-group">
+                <label for="construction_site">Construction Site:</label>
+                <select id="construction_site" name="construction_site">
+                    <option value="">Select Construction Site</option>
+                    {% for site in construction_sites %}
+                        <option value="{{ site.id }}">{{ site.site_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+
+            <br>
+            <button type="submit" class="submit-button" onclick="submitForm(event)">Add Worker</button>
+        </form>
+        {% comment %} <div id="myModal" class="modal">
+            <div class="modal-content">
+              <span class="close">&times;</span>
+              <p>Worker added successfully!</p>
+            </div>
+          </div>           {% endcomment %}
+        <script>
+            function populateDistricts() {
+                var state = document.getElementById("state").value;
+                var districtSelect = document.getElementById("district");
+
+                // Clear existing options
+                districtSelect.innerHTML = "<option value=''>Select District</option>";
+
+                // Add options based on the selected state
+                if (state === "Andhra Pradesh") {
+                    addDistrictOption("Anantapur", districtSelect);
+                    addDistrictOption("Chittoor", districtSelect);
+                    addDistrictOption("East Godavari", districtSelect);
+                    addDistrictOption("Guntur", districtSelect);
+                    addDistrictOption("Krishna", districtSelect);
+                    addDistrictOption("Kurnool", districtSelect);
+                    addDistrictOption("Prakasam", districtSelect);
+                    addDistrictOption("Srikakulam", districtSelect);
+                    addDistrictOption("Visakhapatnam", districtSelect);
+                    addDistrictOption("Vizianagaram", districtSelect);
+                    addDistrictOption("West Godavari", districtSelect);
+                    addDistrictOption("Y.S.R. Kadapa", districtSelect);
+                } else if (state === "Arunachal Pradesh") {
+                    addDistrictOption("Tawang", districtSelect);
+                    addDistrictOption("West Kameng", districtSelect);
+                    addDistrictOption("East Kameng", districtSelect);
+                    addDistrictOption("Papum Pare", districtSelect);
+                    addDistrictOption("Kurung Kumey", districtSelect);
+                    addDistrictOption("Kra Daadi", districtSelect);
+                    addDistrictOption("Lower Subansiri", districtSelect);
+                    addDistrictOption("Upper Subansiri", districtSelect);
+                    addDistrictOption("West Siang", districtSelect);
+                    addDistrictOption("East Siang", districtSelect);
+                    addDistrictOption("Siang", districtSelect);
+                    addDistrictOption("Upper Siang", districtSelect);
+                    addDistrictOption("Lower Siang", districtSelect);
+                    addDistrictOption("Lower Dibang Valley", districtSelect);
+                    addDistrictOption("Dibang Valley", districtSelect);
+                    addDistrictOption("Anjaw", districtSelect);
+                    addDistrictOption("Lohit", districtSelect);
+                    addDistrictOption("Namsai", districtSelect);
+                    addDistrictOption("Changlang", districtSelect);
+                    addDistrictOption("Tirap", districtSelect);
+                    addDistrictOption("Longding", districtSelect);
+                }
+                // Add more conditions for other states
+            }
+
+            function addDistrictOption(districtName, selectElement) {
+                var option = document.createElement("option");
+                option.text = districtName;
+                option.value = districtName;
+                selectElement.add(option);
+            }
+// Function to validate name field (allowing only letters)
+function validateName() {
+    var nameInput = document.getElementById("name");
+    var nameError = document.getElementById("name-error");
+    var namePattern = /^[A-Za-z]+$/; // Regular expression to match letters only
+
+    if (!namePattern.test(nameInput.value.trim())) {
+        nameError.textContent = "Only letters are allowed";
+        return false;
+    } else {
+        nameError.textContent = "";
+        return true;
+    }
+}
+            // Function to validate state field
+            function validateState() {
+                var stateInput = document.getElementById("state");
+                var stateError = document.getElementById("state-error");
+                if (stateInput.value === "") {
+                    stateError.textContent = "Please select a state";
+                    return false;
+                } else {
+                    stateError.textContent = "";
+                    return true;
+                }
+            }
+        
+            // Function to validate district field
+            function validateDistrict() {
+                var districtInput = document.getElementById("district");
+                var districtError = document.getElementById("district-error");
+                if (districtInput.value === "") {
+                    districtError.textContent = "Please select a district";
+                    return false;
+                } else {
+                    districtError.textContent = "";
+                    return true;
+                }
+            }
+        
+            function validatePhoneNumber() {
+                var phoneNumberInput = document.getElementById("mobile_number");
+                var phoneNumber = phoneNumberInput.value.trim();
+    
+                // Regular expression to match international phone number format
+                var phoneRegex = /^\+(?:[0-9] ?){6,14}[0-9]$/;
+    
+                if (!phoneRegex.test(phoneNumber)) {
+                    document.getElementById("phone-error").innerText = "Please enter a valid phone number in international format (e.g., +911234567890).";
+                    phoneNumberInput.focus();
+                    return false;
+                } else {
+                    document.getElementById("phone-error").innerText = "";
+                    return true;
+                }
+            }
+            
+            // Optional: You can add event listeners for real-time validation as the user types
+            document.getElementById("mobile_number").addEventListener("input", function() {
+                validatePhoneNumber();
+            });
+        
+            // Function to perform overall form validation
+            function validateForm() {
+                var isNameValid = validateName();
+                var isStateValid = validateState();
+                var isDistrictValid = validateDistrict();
+                var isMobileNumberValid = validateMobileNumber();
+        
+                return isNameValid && isStateValid && isDistrictValid && isMobileNumberValid;
+            }
+        
+            // Event listeners for real-time validation
+            document.getElementById("name").addEventListener("input", validateName);
+            document.getElementById("state").addEventListener("change", validateState);
+            document.getElementById("district").addEventListener("change", validateDistrict);
+            document.getElementById("mobile_number").addEventListener("input", validateMobileNumber);
+        
+            // Event listener for form submission
+            document.getElementById("worker-form").addEventListener("submit", function(event) {
+                if (!validateForm()) {
+                    event.preventDefault(); // Prevent form submission if validation fails
+                }
+            });
+            {% comment %} function showModal() {
+                var modal = document.getElementById("myModal");
+                modal.style.display = "block";
+                
+                // Hide the modal after 3 seconds
+                setTimeout(function() {
+                  modal.style.display = "none";
+                }, 30000);
+              } {% endcomment %}
+            
+              {% comment %} function submitForm(event) {
+                event.preventDefault(); // Prevent the default form submission
+        
+                // Submit the form using AJAX
+                var form = document.getElementById('bookSlotForm');
+                var formData = new FormData(form);
+        
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message); // Display success message in popup
+                        
+                    } else {
+                        alert(data.message); // Display error message in popup
+                    }
+                    window.location.href = '{% url "add_worker" %}';
+                    // Redirect to vaccination_home after handling the response
+                    
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                    // Redirect to vaccination_home in case of error
+                    window.location.href = '{% url "add_worker" %}';
+                });
+            } {% endcomment %}
+
+              
+        </script>
+    </div>
+</body>
+</html>

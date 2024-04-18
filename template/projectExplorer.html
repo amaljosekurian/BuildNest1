@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Engineer Dashboard</title>
+    <!-- Include Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <!-- Your custom CSS -->
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+      }
+
+      #sidebar {
+        background-color: #343a40;
+        color: #fff;
+        padding-top: 20px;
+      }
+
+      #main-content {
+        margin-top: 50px;
+        padding: 20px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="#">Engineer Dashboard</a>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'user_profile' %}"
+              >Update Profile</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar">
+          <div class="sidebar-sticky">
+            <ul class="nav flex-column">
+              <li class="nav-item">
+                {% comment %} <a class="nav-link active" href="#"> Client Preferences </a> {% endcomment %}
+              </li>
+              <li class="nav-item">
+                {% comment %} <a class="nav-link" href="#"> Browse Work </a> {% endcomment %}
+              </li>
+            </ul>
+          </div>
+        </nav>
+
+        <main
+          role="main"
+          class="col-md-9 ml-sm-auto col-lg-10 px-md-4"
+          id="main-content"
+        >
+          <h2>Project Information</h2>
+          <table class="table table-striped">
+            <tbody>
+              <tr>
+                <th>Project Location</th>
+                <th>Budget</th>
+                <th>Square Feet</th>
+              </tr>
+              <tr>
+                <td>{{projectC.plotBaseData.plot_location}}</td>
+                <td>{{projectC.plotBaseData.approximate_budget}}</td>
+                <td>{{projectC.plotBaseData.square_feet}}</td>
+              </tr>
+              <tr>
+                <th colspan="3">
+                  Floor Plan : Number of
+                  Floors({{projectC.projectdata.num_floors}})
+                </th>
+              </tr>
+              {% for i in floorData %}
+              <tr>
+                <th>Floor {{i.floor_number}}</th>
+              </tr>
+              <tr>
+                <td>Rooms : {{i.num_rooms}}</td>
+                <td>Bathrooms: {{i.num_bathrooms}}</td>
+              </tr>
+              {% endfor %}
+              <tr>
+                <th>Base Floor Data</th>
+              </tr>
+              <tr>
+                <td>Kitchen Type: {{projectC.projectdata.kitchen_type}}</td>
+                {% if projectC.projectdata.dining_room_required %}
+                <td>Dining Room Required: Yes</td>
+                {% else %}
+                <td>Dining Room Required: No</td>
+                {% endif %}
+                {% if projectC.projectdata.store_room_required %}
+                <td>Store Room Required: Yes</td>
+                {% else %}
+                <td>Store Room Required: No</td>
+                {% endif %}
+                {% if projectC.projectdata.work_area_required %}
+                <td>Work Area Room Required: Yes</td>
+                {% else %}
+                <td>Work Area Room Required: No</td>
+                {% endif %}
+              </tr>
+              <tr>
+                <th>Plot Images</th>
+              </tr>
+              <tr>
+                <td>
+                {% for img in plotImages %}
+                <img src="{{img.plot_images.url}}" alt="" srcset="" style="width: 100px; height:100px;">
+                {% endfor %}
+                </td>
+              </tr>
+              <tr>
+                {% if not projectC.payment_is_Done %}
+                <form action="{% url 'createFeeToken' projectC.id %}" method="post">
+                    {% csrf_token %}
+                <th>Propose Plan Fee</th>
+                <td><input type="text" name="feeRe" id="" placeholder="Enter the Fee Required" required></td>
+               </tr>
+               <tr>
+                <td><input type="submit" class="btn btn-primary" value="Send Request"></a></td>
+               </tr>
+            </form>
+            {% else %}
+            <form action="{% url 'projectplanUpdate' projectC.id %}" method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+              <table>
+                <tr>
+                  <td><h3>Upload File</h3></td>
+                  <td><input type="file" name="pdf_file" accept=".pdf" required></td>
+                </tr>
+                <tr>
+                  <td colspan="2"><input type="submit" value="Upload File and Save"></td>
+                </tr>
+              </table>
+            </form>
+            {% endif %}
+            </tr>
+            </tbody>
+          </table>
+        </main>
+      </div>
+    </div>
+
+    <!-- Include Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Your custom JS scripts if needed -->
+  </body>
+</html>

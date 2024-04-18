@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construction Sites</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        th {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        tr:hover {
+            background-color: #f0f0f0;
+        }
+
+        .file-icon {
+            color: #28a745;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Your Construction Sites</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Site Name</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Permits</th>
+                    <th>Additional Description</th>
+                    <th>View Products</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for site in construction_sites %}
+                    <tr>
+                        <td>{{ site.site_name }}</td>
+                        <td>{{ site.start_date }}</td>
+                        <td>{{ site.end_date }}</td>
+                        <td><a href="{{ site.upload_permits.url }}"><i class="fas fa-file-alt file-icon"></i></a></td>
+                        <td>{{ site.additional_description }}</td>
+                        <td><button onclick="openModal('{{ site.id }}')">View Products</button></td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6">No construction sites found.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="productDetails"></div>
+        </div>
+    </div>
+
+    <script>
+        // Get the modal
+      // Get the modal
+var modal = document.getElementById("myModal");
+
+// When the user clicks on the button, open the modal
+function openModal(siteId) {
+    // Make an AJAX call to fetch product details for the selected construction site
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            var products = JSON.parse(this.responseText);
+            var html = "<h2>Products</h2>";
+            for (var i = 0; i < products.length; i++) {
+                var product = products[i];
+                html += "<div class='product'>";
+                    html += "<img src='" + product.thumbnail + "' alt='Product Thumbnail' style='max-width: 100px; max-height: 100px;'>";
+                    html += "<p><strong>Category:</strong> " + product.category + "</p>";
+                html += "<p><strong>Brand Name:</strong> " + product.brand_name + "</p>";
+                html += "<p><strong>Product Description:</strong> " + product.product_description + "</p>";
+                html += "</div><hr>";
+            }
+            document.getElementById("productDetails").innerHTML = html;
+            modal.style.display = "block";
+        }
+    };
+    xhttp.open("GET", "/get_product_details/?site_id=" + siteId, true);
+    xhttp.send();
+}
+
+// When the user clicks on <span> (x), close the modal
+function closeModal() {
+    modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        closeModal();
+    }
+}
+
+    </script>
+</body>
+</html>

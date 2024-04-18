@@ -1,0 +1,133 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Product</title>
+  <style>
+    /* Global Styles */
+    body {
+      background-image: url("{% static 'img\product.jpg' %}");
+      background-size:cover;
+      background-position: center;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    form {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: rgba(225, 225, 225, 0.5);
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 20px;
+      background-color: rgba(225, 225, 225, 0.5);
+      box-sizing: border-box;
+    }
+
+    select {
+      appearance: auto;
+      -moz-appearance: auto;
+      -webkit-appearance: auto;
+    }
+
+    input[type="submit"] {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    input[type="submit"]:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h1>Add Product</h1>
+  <form action="#" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <label for="category">Category:</label>
+    <select name="category" id="category">
+      <option value="">Select Category</option>
+        {% for category in categories %}
+            <option value="{{ category.id }}">{{ category.name }}</option>
+        {% endfor %}
+    </select>
+    <label for="productName">Product Name:</label>
+    <input type="text" id="productName" name="productName" required>
+
+    <label for="brandName">Brand Name:</label>
+    <input type="text" id="brandName" name="brandName" required>
+
+    <div id="colorField" style="display: none;">
+      <label for="color">Color:</label>
+      <input type="text" id="color" name="color">
+    </div>
+
+    <label for="stocks">Stocks:</label>
+    <input type="number" id="stocks" name="stocks" required>
+
+    <label for="productDescription">Product Description:</label>
+    <textarea id="productDescription" name="productDescription" rows="4" style="width: 100%;" required></textarea>
+
+    <label for="thumbnail" style="margin-bottom: 20px;">Thumbnail:</label>
+    <input type="file" id="thumbnail" name="thumbnail">
+
+    <label for="price">Price:</label>
+    <div style="display: flex;">
+      <select id="pricePerUnit" name="pricePerUnit" style="flex: 1;" required>
+        <option value="/kg">Per kg</option>
+        <option value="/piece">Per piece</option>
+        <option value="/sqft">Per sqft</option>
+        <option value="/tin">Per tin</option>
+        <option value="/ton">Per ton</option>
+      </select>
+      <input type="number" id="price" name="price" style="flex: 1;" required>
+    </div>
+
+    <input type="submit" value="Add Product">
+  </form>
+
+  <script>
+    // Function to show/hide the color field based on the selected category
+    document.getElementById('category').addEventListener('change', function() {
+      var category = this.value;
+      var colorField = document.getElementById('colorField');
+
+      if (category === 'Paints and Finishes') {
+        colorField.style.display = 'block';
+      } else {
+        colorField.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>

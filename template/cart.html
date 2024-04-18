@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #007bff;
+        }
+
+        .cart-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .cart-table th,
+        .cart-table td {
+            padding: 15px;
+            border-bottom: 1px solid #dee2e6;
+            text-align: left;
+        }
+
+        .cart-table th {
+            background-color: #007bff;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .cart-item img {
+            width: 100px;
+            height: auto;
+        }
+
+        .quantity input {
+            width: 40px;
+            text-align: center;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+
+        .remove-btn {
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .remove-btn:hover {
+            background-color: #c82333;
+        }
+
+        .increase-btn,
+        .decrease-btn {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .increase-btn:hover,
+        .decrease-btn:hover {
+            background-color: #218838;
+        }
+
+        #total-price {
+            font-weight: bold;
+            font-size: 20px;
+            color: #007bff;
+        }
+
+        .add-to-site-btn {
+            display: block;
+            width: 200px;
+            margin: 20px auto;
+            padding: 10px 20px;
+            text-align: center;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .add-to-site-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .dropdown-container {
+            text-align: center;
+        }
+
+        .dropdown {
+            display: inline-block;
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+            z-index: 1;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: left;
+        }
+
+        .dropdown-content a {
+            color: #333;
+            padding: 8px 12px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Shopping Cart</h1>
+    <table class="cart-table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart_items %}
+            <tr class="cart-item" id="cart-item-{{ item.id }}">
+                <td>
+                    <img src="{{ item.product.thumbnail.url }}" alt="{{ item.product.brand_name }}">
+                    {{ item.product.brand_name }}
+                </td>
+                <td class="price" id="price-{{ item.id }}">{{ item.product.price }}</td>
+                <td class="quantity">
+                    <button class="decrease-btn" data-item-id="{{ item.id }}">-</button>
+                    <input type="text" class="quantity-input" value="{{ item.quantity }}" readonly>
+                    <button class="increase-btn" data-item-id="{{ item.id }}">+</button>
+                </td>
+                <td>
+                    <form action="{% url 'remove_from_cart' item.id %}" method="post">
+                        {% csrf_token %}
+                        <button class="remove-btn" type="submit" data-item-id="{{ item.id }}">Remove</button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">Your cart is empty.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p>Total Price: <span id="total-price">{{ total_price }}</span></p>
+    
+    <button class="add-to-site-btn" onclick="toggleDropdown()">Add to Site</button>
+    
+    <div class="dropdown-container">
+        <div class="dropdown" id="site-dropdown">
+            <div class="dropdown-content">
+                <form method="post" action="{% url 'add_to_site' %}">
+                    {% csrf_token %}
+                    {% for site in construction_sites %}
+                        <input type="hidden" name="construction_site" value="{{ site.id }}">
+                        <button type="submit">{{ site.site_name }}</button>
+                    {% endfor %}
+                </form>
+            </div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const increaseButtons = document.querySelectorAll('.increase-btn');
+            const decreaseButtons = document.querySelectorAll('.decrease-btn');
+    
+            increaseButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const itemId = this.dataset.itemId;
+                    const input = document.querySelector(`#cart-item-${itemId} .quantity-input`);
+                    const quantity = parseInt(input.value);
+                    input.value = quantity + 1;
+    
+                    updateCartItem(itemId, quantity + 1);
+                });
+            });
+    
+            decreaseButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const itemId = this.dataset.itemId;
+                    const input = document.querySelector(`#cart-item-${itemId} .quantity-input`);
+                    const quantity = parseInt(input.value);
+                    if (quantity > 1) {
+                        input.value = quantity - 1;
+    
+                        updateCartItem(itemId, quantity - 1);
+                    }
+                });
+            });
+    
+            function updateCartItem(itemId, quantity) {
+                const price = parseFloat(document.querySelector(`#cart-item-${itemId} .price`).textContent.replace('$', ''));
+                const priceElement = document.querySelector(`#price-${itemId}`);
+                const newPrice = price * quantity;
+                priceElement.textContent = '$' + newPrice.toFixed(2);
+    
+                // Update the total price by recalculating the sum of all item prices
+                updateTotalPrice();
+            }
+    
+            function updateTotalPrice() {
+                const priceElements = document.querySelectorAll('.price');
+                let totalPrice = 0;
+                priceElements.forEach(element => {
+                    totalPrice += parseFloat(element.textContent.replace('$', ''));
+                });
+                document.getElementById('total-price').textContent = '$' + totalPrice.toFixed(2);
+            }
+        });
+    
+        function toggleDropdown() {
+            var dropdown = document.getElementById('site-dropdown');
+            var dropdownContent = dropdown.querySelector('.dropdown-content');
+            dropdownContent.classList.toggle('show');
+        }
+    
+        window.onclick = function(event) {
+            if (!event.target.matches('.add-to-site-btn')) {
+                var dropdowns = document.querySelectorAll(".dropdown-content");
+                dropdowns.forEach(function(dropdown) {
+                    if (dropdown.classList.contains('show')) {
+                        dropdown.classList.remove('show');
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>

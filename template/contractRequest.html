@@ -1,0 +1,299 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>BuildNest</title>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="Construction Company Website Template" name="keywords">
+        <meta content="Construction Company Website Template" name="description">
+
+        <!-- Favicon -->
+        <link href="{% static "img/favicon.ico" %}" rel="icon">
+
+        <!-- Google Font -->
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+        <!-- CSS Libraries -->
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+        <link href="{% static "lib/flaticon/font/flaticon.css" %}" rel="stylesheet"> 
+        <link href="{% static "lib/animate/animate.min.css" %}" rel="stylesheet">
+        <link href="{% static "lib/owlcarousel/assets/owl.carousel.min.css" %}" rel="stylesheet">
+        <link href="{% static "lib/lightbox/css/lightbox.min.css" %}" rel="stylesheet">
+        <link href="{% static "lib/slick/slick.css" %}" rel="stylesheet">
+        <link href="{% static "lib/slick/slick-theme.css" %}" rel="stylesheet">
+
+        <!-- Template Stylesheet -->
+        <link href="{% static "css/style20.css" %}" rel="stylesheet">
+    </head>
+
+    <body>
+        <div class="wrapper">
+            <!-- Top Bar Start -->
+            <div class="top-bar">
+                <div class="container-fluid">
+                    <div class="row align-items-center">
+                        <div class="col-lg-4 col-md-12">
+                            <div class="logo">
+                                <a href="index.html">
+                                    <h1>BuildNest</h1>
+                                    <!-- <img src="img/logo.jpg" alt="Logo"> -->
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-lg-8 col-md-7 d-none d-lg-block">
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="top-bar-item">
+                                        <div class="top-bar-icon">
+                                            <i class="flaticon-calendar"></i>
+                                        </div>
+                                        <div class="top-bar-text">
+                                            <h3>Opening Hour</h3>
+                                            <p>Mon - Fri, 8:00 - 9:00</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="top-bar-item">
+                                        <div class="top-bar-icon">
+                                            <i class="flaticon-call"></i>
+                                        </div>
+                                        <div class="top-bar-text">
+                                            <h3>Call Us</h3>
+                                            <p>+91 9207008601</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="top-bar-item">
+                                        <div class="top-bar-icon">
+                                            <i class="flaticon-send-mail"></i>
+                                        </div>
+                                        <div class="top-bar-text">
+                                            <h3>Email Us</h3>
+                                            <p>buildnest97@gmail.com</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Top Bar End -->
+
+            <!-- Nav Bar Start -->
+            <div class="nav-bar">
+                <div class="container-fluid"   >
+                    <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
+                        <a href="#" class="navbar-brand">MENU</a>
+                        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+
+                        <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+                            <div class="navbar-nav mr-auto">
+                                <a href="{% url "client" %}" class="nav-item nav-link active">Home</a>
+                                <div class="nav-item dropdown">
+                                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" id="pages">Pages</a>
+                                    <div class="dropdown-menu">
+                                        <a href="{% url "user_profile" %}" class="dropdown-item" id="update">Update Profile</a>
+                                    </div>
+                                </div>
+                                <a href="contact.html" class="nav-item nav-link">Contact</a>
+                                {% comment %} <a href="{% url 'requestContract' %}" class="nav-item nav-link">Apply For Contract</a> {% endcomment %}
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                      Notifications
+                                    </a>
+                                    <!-- Dropdown menu -->
+                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                      {% if projects %}
+                                      {% for i in projects %}
+                                      {% if i.payment_request %}
+                                      <a class="dropdown-item" href="{% url 'planBillPayment' i.id %}">Payment Request by {{i.engineer.username}}</a>
+                                      {% endif %}
+                                      {% endfor %}
+                                      {% endif %}
+                                    </div>
+                                  </li>
+                            </div>
+                            <div class="ml-auto">
+                                <a class="btn"> Welcome, {{ user.username }}</a>
+                                <a class="btn" href="{% url "logout" %}">Logout</a>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+            <!-- Nav Bar End -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Construction Project Application Form</title>
+    <style>
+      /* CSS styles */
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+      }
+
+      .container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        max-width: 900px;
+        margin: 20px auto;
+      }
+
+      .form-container {
+        flex: 1;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h2 {
+        color: #333;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+
+      input[type="text"],
+      input[type="number"],
+      input[type="file"],
+      textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+
+      input[type="file"] {
+        height: auto;
+      }
+
+      button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 3px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      /* New styles to align elements in the same line */
+      .form-group.inline {
+        display: inline-block;
+        margin-right: 20px; /* Adjust spacing between elements */
+        vertical-align: top; /* Align elements to the top */
+      }
+
+      /* Additional style for radio buttons */
+      input[type="radio"] {
+        display: inline-block;
+        margin-right: 5px; /* Adjust spacing between radio buttons */
+        vertical-align: middle; /* Align radio buttons to the middle of labels */
+      }
+
+      /* Styles for labels of radio buttons */
+      .radio-label {
+        display: inline-block;
+        vertical-align: middle; /* Align labels to the middle of radio buttons */
+      }
+
+      /* Style for information table */
+      table {
+        margin-left: 20px;
+        width: 200px;
+        border-collapse: collapse;
+      }
+
+      th, td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-align: center;
+      }
+
+      th {
+        background-color: #f2f2f2;
+      }
+    </style>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js" integrity="sha384-cDp5l9Lq8gz37t9Y+q6hFZYPz7Y4HQ6p4fY5uGLf4cN/AuK48Wr+8Zj6zERv1bZ" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h2>Construction Project Application Form</h2>
+            <form action="{% url 'requestContract' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="form-group inline">
+                    <label for="rate_per_sq_ft">Rate per Square Ft:</label>
+                    <select id="rate_per_sq_ft" name="rate_per_sq_ft" required>
+                        <option value="">Select Rate per Sq Ft</option>
+                        <option value="7500">800Sq Ft</option>
+                        <option value="10000">1800Sq Ft</option>
+                        <option value="12500"></option>
+                        <!-- Add more options as needed -->
+                    </select>
+                </div>
+
+                <!-- Material Quality and Rate per Square Foot in the same line -->
+                <div class="form-group inline">
+                    <label>Material Quality:</label><br>
+                    <input type="radio" id="standard" name="construction_type" value="standard" checked>
+                    <label class="radio-label" for="standard">Standard</label>
+                    <input type="radio" id="mid_range" name="construction_type" value="mid_range">
+                    <label class="radio-label" for="mid_range">Premium</label>
+                </div>
+
+                <!-- Other form fields -->
+                <div class="form-group">
+                    <label for="plot_address">Plot Address:</label>
+                    <textarea id="plot_address" name="plot_address" rows="3" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="plot_id_document">Plot Identification Document:</label>
+                    <input type="file" id="plot_id_document" name="plot_id_document" accept=".pdf, .doc, .docx" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="plot_images">Plot Images (Minimum 3):</label>
+                    <input type="file" id="plot_images" name="plot_images" accept="image/*" multiple required />
+                    <span id="image-error" class="error-message"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="plot_location">Plot Location:</label>
+                    <input type="text" id="plot_location" name="plot_location" required />
+                </div>
+
+                <!-- Remaining form fields -->
+                <button type="submit">Submit Application</button>
+            </form>
+        </div>
+</body>
+</html>

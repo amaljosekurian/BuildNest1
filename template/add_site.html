@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Construction Site</title>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder@1.13.0/dist/Control.Geocoder.css" />
+    <!-- Custom CSS Styling -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        textarea:focus,
+        input[type="file"]:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        #map {
+            height: 300px; /* Adjust height as needed */
+            width: 100%;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        
+        input[type="number"] {
+            width: calc(100% - 22px); /* Adjusted width to match other fields */
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: border-color 0.3s ease;
+        }
+        
+
+        button[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: block;
+            width: 100%;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Add Construction Site</h1>
+    <!-- Form with fields -->
+    <form action="{% url 'add_construction_site' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="site_name">Site Name:</label>
+            <input type="text" id="site_name" name="site_name" required>
+        </div>
+        <div class="form-group">
+            <label for="start_date">Start Date:</label>
+            <input type="date" id="start_date" name="start_date" required>
+        </div>
+        <div class="form-group">
+            <label for="end_date">End Date:</label>
+            <input type="date" id="end_date" name="end_date" required>
+        </div>
+        <div class="form-group">
+            <label for="upload_permits">Upload Permits:</label>
+            <input type="file" id="upload_permits" name="upload_permits" accept=".pdf, .doc, .docx">
+        </div>
+        <div class="form-group">
+            <label for="approximate_budget">Approximate Budget:</label>
+            <input
+              type="number"
+              id="approximate_budget"
+              name="approximate_budget"
+              required
+            />
+          </div>
+        <div class="form-group">
+            <label for="additional_description">Additional Description:</label>
+            <textarea id="additional_description" name="additional_description" rows="4"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="site_location">Site Location:</label>
+            <input type="text" id="site_location" name="site_location" required readonly>
+        </div>
+        <!-- Map integration for site location -->
+        <div id="map"></div>
+        <button type="submit">Submit</button>
+    </form>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder@1.13.0/dist/Control.Geocoder.js"></script>
+    <script>
+        var map = L.map('map').setView([10.8505, 76.2711], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+        }).addTo(map);
+
+        L.Control.geocoder({
+            defaultMarkGeocode: false
+        })
+            .on('markgeocode', function (e) {
+                var location = e.geocode.center;
+                map.setView(location, 15);
+                marker.setLatLng(location);
+                document.getElementById('site_location').value = location.lat + ', ' + location.lng;
+            })
+            .addTo(map);
+
+        var marker = L.marker([10.8505, 76.2711], {
+            draggable: true
+        }).addTo(map);
+
+        marker.on('dragend', function (e) {
+            var coord = e.target.getLatLng();
+            document.getElementById('site_location').value = coord.lat + ', ' + coord.lng;
+        });
+
+        map.on('click', function (e) {
+            marker.setLatLng(e.latlng);
+            document.getElementById('site_location').value = e.latlng.lat + ', ' + e.latlng.lng;
+        });
+    </script>
+
+</body>
+</html>

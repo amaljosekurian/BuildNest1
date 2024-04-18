@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construction Project - Additional Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        form {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        select,
+        input[type="text"],
+        input[type="radio"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        input[type="radio"] {
+            width: auto;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <h2> <center> Construction Project - Additional Details </center> </h2>
+    <form action="{% url 'requestContract2' %}" id="additional-details-form" onsubmit="return validateForm()" method="post">
+        {% csrf_token %}
+        <label for="num_floors">Number of Floors:</label>
+        <select id="num_floors" name="num_floors" onchange="generateFloorDetails()">
+            <option value="" disabled selected>Select the Number of Floors</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <!-- Add more options as needed -->
+        </select>
+
+        <div id="floor-details-container"></div>
+
+        <label>Separate Work Area Required:</label>
+        <label><input type="radio" name="work_area_required" value="yes"> Yes</label>
+        <label><input type="radio" name="work_area_required" value="no" checked> No</label>
+
+        <label>Store Room Required:</label>
+        <label><input type="radio" name="store_room_required" value="yes"> Yes</label>
+        <label><input type="radio" name="store_room_required" value="no" checked> No</label>
+
+        <label>Dining Room Required:</label>
+        <label><input type="radio" name="dining_room_required" value="yes"> Yes</label>
+        <label><input type="radio" name="dining_room_required" value="no" checked> No</label>
+
+        <label for="kitchen_type">Type of Kitchen:</label>
+        <select id="kitchen_type" name="kitchen_type">
+            <option value="open">Open Kitchen</option>
+            <option value="normal">Normal Kitchen</option>
+        </select>
+
+        <label for="additional_amenities">Additional Amenities (Optional):</label>
+        <input type="text" id="additional_amenities" name="additional_amenities">
+
+        <label for="additional_amenities">Select Your Engineer</label>
+        <select name="engineer" id="">
+            <option value="">Select Your Engineer</option>
+            {% for eng in engineer %}
+            <option value="{{eng.id}}">{{ eng.username }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">Submit Details</button>
+    </form>
+
+    <script>
+        function generateFloorDetails() {
+            var numFloors = document.getElementById("num_floors").value;
+            var floorDetailsContainer = document.getElementById("floor-details-container");
+            floorDetailsContainer.innerHTML = "";
+
+            for (var i = 1; i <= numFloors; i++) {
+                var floorDiv = document.createElement("div");
+                floorDiv.innerHTML = "<label for='floor" + i + "_rooms'>Floor " + i + " Rooms:</label>" +
+                    "<select id='floor" + i + "_rooms' name='floor" + i + "_rooms'>" +
+                    "<option value='1'>1</option>" +
+                    "<option value='2'>2</option>" +
+                    "<option value='3'>3</option>" +
+                    "</select>";
+
+                floorDetailsContainer.appendChild(floorDiv);
+
+                floorDiv.innerHTML += "<label for='floor" + i + "_bathrooms'>Floor " + i + " Bathrooms:</label>" +
+                    "<select id='floor" + i + "_bathrooms' name='floor" + i + "_bathrooms'>" +
+                    "<option value='1'>1</option>" +
+                    "<option value='2'>2</option>" +
+                    "<option value='3'>3</option>" +
+                    "</select>";
+
+                floorDetailsContainer.appendChild(floorDiv);
+            }
+        }
+
+        function validateForm() {
+            // Add your validation logic here
+            return true; // return true if the form is valid, else return false
+        }
+    </script>
+</body>
+
+</html>

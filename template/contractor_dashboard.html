@@ -1,0 +1,193 @@
+{% comment %} {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contractor Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/dashboard.css' %}">
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+    }
+    
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+    }
+    
+    h1 {
+        text-align: center;
+        margin-top: 0;
+    }
+    
+    .menu {
+        background-color: #333;
+        color: #fff;
+    }
+    
+    .menu ul {
+        list-style: none;
+        padding: 0;
+    }
+    
+    .menu ul li {
+        display: inline;
+        margin-right: 20px;
+    }
+    
+    .menu a {
+        color: #fff;
+        text-decoration: none;
+    }
+    
+    .content {
+        margin-top: 20px;
+    }
+</style>    
+<body>
+    <div class="container">
+        <h1>Welcome, Contractor</h1>
+        <div class="menu">
+            <ul>
+                <li><a href="#">Dashboard</a></li>
+                <li><a href="#">Add Workers</a></li>
+                <!-- Add more menu items as needed -->
+            </ul>
+        </div>
+        <div class="content">
+            <form method="post" class="worker-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="worker_id">ID:</label>
+                    <input type="text" id="worker_id" name="worker_id" required>
+                </div>
+        
+                <div class="form-group">
+                    <label for="worker_name">Name:</label>
+                    <input type="text" id="worker_name" name="worker_name" required>
+                </div>
+        
+                <div class="form-group">
+                    <label for="worker_region">Region:</label>
+                    <input type="text" id="worker_region" name="worker_region" required>
+                </div>
+        
+                <div class="form-group">
+                    <label for="worker_job_role">Job Role:</label>
+                    <input type="text" id="worker_job_role" name="worker_job_role" required>
+                </div>
+        
+                <div class="form-group">
+                    <label for="state">State:</label>
+                    <select id="state" name="state">
+                        <option value="kerala">Kerala</option>
+                        <option value="other_state">Other State</option>
+                    </select>
+                </div>
+        
+                <div class="form-group">
+                    <label for="salary_frequency">Salary Frequency:</label>
+                    <select id="salary_frequency" name="salary_frequency">
+                        <option value="weekly">Weekly</option>
+                        <option value="daily">Daily</option>
+                    </select>
+                </div>
+        
+                <div class="form-group">
+                    <label for="salary">Salary:</label>
+                    <input type="number" id="salary" name="salary" required>
+                </div>
+        
+                <div class="form-group">
+                    <label for="site_id">Site ID:</label>
+                    <input type="text" id="site_id" name="site_id" required>
+                </div>
+        
+                <div class="form-group">
+                    <label for="contractor_id">Contractor ID:</label>
+                    <input type="text" id="contractor_id" name="contractor_id" required>
+                </div>
+        
+                <button type="submit">Add Worker</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+
+<script>
+    function validateForm() {
+        var workerId = document.getElementById("worker_id").value;
+        var workerName = document.getElementById("worker_name").value;
+        var workerRegion = document.getElementById("worker_region").value;
+        var workerJobRole = document.getElementById("worker_job_role").value;
+        var salary = document.getElementById("salary").value;
+        var siteId = document.getElementById("site_id").value;
+        var contractorId = document.getElementById("contractor_id").value;
+
+        // Worker ID validation
+        if (workerId.trim() === "") {
+            document.getElementById("worker-id-error").textContent = "Worker ID is required";
+            return false;
+        } else {
+            document.getElementById("worker-id-error").textContent = "";
+        }
+
+        // Worker Name validation
+        if (workerName.trim() === "") {
+            document.getElementById("worker-name-error").textContent = "Worker Name is required";
+            return false;
+        } else {
+            document.getElementById("worker-name-error").textContent = "";
+        }
+
+        // Worker Region validation
+        if (workerRegion.trim() === "") {
+            document.getElementById("worker-region-error").textContent = "Worker Region is required";
+            return false;
+        } else {
+            document.getElementById("worker-region-error").textContent = "";
+        }
+
+        // Worker Job Role validation
+        if (workerJobRole.trim() === "") {
+            document.getElementById("worker-job-role-error").textContent = "Worker Job Role is required";
+            return false;
+        } else {
+            document.getElementById("worker-job-role-error").textContent = "";
+        }
+
+        // Salary validation
+        if (isNaN(salary) || salary <= 0) {
+            document.getElementById("salary-error").textContent = "Salary must be a positive number";
+            return false;
+        } else {
+            document.getElementById("salary-error").textContent = "";
+        }
+
+        // Site ID validation
+        if (siteId.trim() === "") {
+            document.getElementById("site-id-error").textContent = "Site ID is required";
+            return false;
+        } else {
+            document.getElementById("site-id-error").textContent = "";
+        }
+
+        // Contractor ID validation
+        if (contractorId.trim() === "") {
+            document.getElementById("contractor-id-error").textContent = "Contractor ID is required";
+            return false;
+        } else {
+            document.getElementById("contractor-id-error").textContent = "";
+        }
+
+        return true;
+    }
+</script> {% endcomment %}

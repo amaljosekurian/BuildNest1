@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Details</title>
+  <style>
+    /* Global Styles */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      background-color: #007bff;
+      color: #fff;
+      padding: 10px;
+    }
+
+    table {
+      width: 80%;
+      margin: 20px auto;
+      border-collapse: collapse;
+    }
+
+    table,
+    th,
+    td {
+      border: 1px solid #ddd;
+    }
+
+    th,
+    td {
+      padding: 12px;
+      text-align: left;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    tr:hover {
+      background-color: #ddd;
+    }
+
+    a {
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* Navigation Bar Styles */
+    .sidenav {
+      height: 100%;
+      width: 250px;
+      position: fixed;
+      z-index: 1;
+      top: 0;
+      left: 0;
+      background-color: #333;
+      overflow-x: hidden;
+      transition: 0.2s;
+      padding-top: 60px;
+    }
+
+    .sidenav a {
+      padding: 16px 8px;
+      text-decoration: none;
+      font-size: 20px;
+      color: white;
+      display: block;
+      transition: 0.3s;
+    }
+
+    .sidenav a:hover {
+      color: #007bff;
+    }
+
+    /* Container for the tables */
+    .table-container {
+      margin-left: 250px; /* Adjust for the width of the navigation bar */
+      padding: 20px;
+    }
+
+    /* Style for individual tables */
+    .user-table {
+      display: none; /* Initially hide all tables */
+    }
+
+    /* Show the active table */
+    .user-table.active {
+      display: block;
+    }
+
+    /* Form container */
+    .form-container {
+      margin-top: 20px;
+    }
+
+    /* Form input fields */
+    .form-input {
+      margin-bottom: 10px;
+    }
+
+    /* Form submit button */
+    .form-submit {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .form-submit:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <div class="sidenav">
+    <a href="#admin-users" class="nav-link active">Admin</a>
+    <a href="#normal_users" class="nav-link">Purchase manager</a>
+    <a href="#club-users" class="nav-link">Clients</a>
+    <a href="#contractor" class="nav-link">Contractors</a>
+    <a href="#engineer" class="nav-link">Engineers</a>
+    <a href="{% url 'add_product' %}" class="nav-link">Add Product</a>
+    <a href="{% url 'add_category' %}" class="nav-link">Add Category</a>
+    <a href="{% url 'logout' %}" class="nav-link">Logout</a>
+
+    <!-- Add more links as needed for other user roles -->
+  </div>
+  <!-- Container for Tables -->
+  <div class="table-container">
+    <!-- Table for Admin Users -->
+    <div id="admin-users" class="user-table active">
+      <h2>Admin</h2>
+      <!-- Add the table for admin users here -->
+      <form method="post">
+        {% csrf_token %}
+        <table>
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>Username</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in admin_users %}
+            <tr>
+              <td>{{ user.email }}</td>
+              <td>{{ user.username }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </form>
+    </div>
+     <!-- Table for Normal Users -->
+     <div id="normal_users" class="user-table">
+      <h2>Purchase Manager</h2>
+      <!-- Add the table for normal users here -->
+      <table>
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Username</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in Purchase_manager %}
+          <tr>
+            <td>{{ user.email }}</td>
+            <td>{{ user.username }}</td>
+            <td>
+              {% if user.is_active %}
+              <input type="submit" value="Deactivate" />
+              {% else %}
+              <input type="submit" value="Activate" />
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Table for Club Users -->
+    <div id="club-users" class="user-table">
+      <h2>Clients</h2>
+      <!-- Add the table for club users here -->
+      <table>
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Username</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in Client_user %}
+          <tr>
+            <td>{{ user.email }}</td>
+            <td>{{ user.first_name }}</td>
+            <td>
+              {% if user.is_active %}
+              <input type="submit" value="Deactivate" />
+              {% else %}
+              <input type="submit" value="Activate" />
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Table for Contractor Users -->
+    <div id="contractor" class="user-table">
+      <h2>Contractors</h2>
+      <!-- Add the table for contractor users here -->
+      <table>
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Username</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in Contractor_user %}
+          <form action="{% url 'UserAcivation' id=user.id %}" method="post">
+            {% csrf_token %}
+            <tr>
+              <td>{{ user.email }}</td>
+              <td>{{ user.username }}</td>
+              <td>
+                {% if user.is_active %}
+                <input type="submit" value="Deactivate" />
+                {% else %}
+                <input type="submit" value="Activate" />
+                {% endif %}
+              </td>
+            </tr>
+          </form>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div id="engineer" class="user-table">
+      <h2>Engineers</h2>
+      <!-- Add the table for club users here -->
+      <table>
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Engineer Name</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in engineers %}
+          <tr>
+            <td>{{ user.email }}</td>
+            <td>{{ user.first_name }}</td>
+            <td>
+              {% if user.is_active %}
+              <input type="submit" value="Deactivate" />
+              {% else %}
+              <input type="submit" value="Activate" />
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  <!-- JavaScript/jQuery to handle navigation -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $(".nav-link").click(function () {
+        // Get the target table ID from the href
+        var targetTable = $(this).attr("href");
+
+        // Hide all tables
+        $(".user-table").removeClass("active");
+
+        // Show the selected table
+        $(targetTable).addClass("active");
+      });
+    });
+  </script>
+</body>
+</html>

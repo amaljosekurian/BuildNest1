@@ -1,0 +1,329 @@
+<!-- purchase_manager.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Warehouse Inventory</title>
+<style>
+  /* Global Styles */
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Side Navigation Styles */
+  .sidenav {
+    height: 100%;
+    width: 200px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #333;
+    padding-top: 20px;
+  }
+
+  .sidenav a {
+    padding: 10px;
+    text-decoration: none;
+    color: #fff;
+    display: block;
+    transition: 0.3s;
+  }
+  
+  .sidenav h3 {
+    color: #fff;  
+  }
+
+  .sidenav a:hover {
+    background-color: #ddd;
+    color: #333;
+  }
+
+  /* Main Content Styles */
+  .main-content {
+    margin-left: 220px; /* Adjust for the width of the side navigation */
+    padding: 20px;
+    position: relative;
+  }
+
+  .search-bar {
+    text-align: left;
+    margin-bottom: 20px;
+    position: relative;
+   
+    
+  }
+
+
+  .search-bar form {
+    display: inline-block; /* Align form and buttons horizontally */
+    
+  }
+
+  .search-bar input[type="text"] {
+    padding: 10px;
+    width: 60%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+
+  .search-bar input[type="submit"] {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;/
+
+
+    
+  }
+
+  .search-bar input[type="submit"]:hover {
+    background-color: #0056b3;
+   
+  }
+
+  /* Profile Button Styles */
+  .profile-btn,
+  .logout-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .profile-btn:hover,
+  .logout-btn:hover {
+    background-color: #0056b3;
+  }
+
+  .profile-btn {
+    right: 150px; /* Adjust position as needed */
+  }
+
+  .logout-btn {
+    right: 20px; /* Adjust position as needed */
+  }
+
+  /* Product Grid Styles */
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(200px, 1fr)); /* Display 3 cards per row */
+    grid-gap: 20px;
+    
+   
+  }
+
+  .product-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    text-align: center;
+    width: 300px; /* Fixed width for each card */
+    height:400px;
+    margin: auto; /* Center align the cards */
+  }
+
+  .product-card img {
+    max-width: 100%;
+    height: 140px;
+    
+  }
+
+  .product-card button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .product-card button:hover {
+    background-color: #0056b3;
+  }
+  .cart-btn {
+    background-color: #007bff; /* Green color code */
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+    text-align: center;
+    line-height: 50px;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+
+
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    {% comment %} padding: 10px 20px;  {% endcomment %}
+    {% comment %} background-color: #007bff; {% endcomment %}
+    {% comment %} color: #fff; {% endcomment %}
+    {% comment %} border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease; {% endcomment %}
+    margin-right:300px;
+  }
+
+  .cart-btn:hover {
+    background-color: #45a049; /* Darker shade of green on hover */
+  }
+  .search-btn {
+    padding: 10px 20px;
+    background-color: #007bff; /* Vibrant blue */
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .search-btn:hover {
+    background-color: #0056b3; /* Darker shade of blue on hover */
+  }
+  .drop{
+    padding: 7px 10px;
+    border-radius: 8px 
+  }
+  
+</style>
+</head>
+<body>
+<div class="sidenav">
+  <h3>Select By Category</h3>
+  <a href="#" class="category" data-category="All">All</a>
+  {% for category in categories %}
+  <a href="#" class="category" data-category="{{ category }}">{{ category }}</a>
+  {% endfor %}
+</div> 
+
+<div class="main-content">
+  <div class="search-bar">
+    <div class="search-bar">
+
+    <form method="GET" action="{% url 'purchase_manager' %}">
+      <input type="text" name="q" placeholder="Search products" value="{{ search_query }}">
+      <button type="submit" class="search-btn">Search</button>
+  </form>
+  
+  <form method="GET" action="{% url 'purchase_manager' %}">
+      <select name="category" class="drop">
+          <option value="">All Categories</option>
+          {% for category in categories %}
+          <option value="{{ category }}" {% if category == selected_category %}selected{% endif %}>{{ category }}</option>
+          {% endfor %}
+      </select>
+      <select name="brand" class="drop">
+          <option value="" >All Brands</option>
+          {% for product in products %}
+          <option value="{{ product.brand_name }}" {% if product.brand_name == selected_brand %}selected{% endif %}>{{ product.brand_name }}</option>
+          {% endfor %}
+      </select>
+      <button type="submit" class="search-btn">Filter</button>
+  </form>
+
+<!-- purchase_manager.html -->
+
+<a href="{% url 'view_cart' %}" class="cart-link">
+    <button class="cart-btn">&#128722;</button>
+  </a>
+  
+
+    <a href="{% url 'user_profile' %}" class="profile-btn">Update Profile</a>
+    <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+  </div>
+  <div class="product-grid">
+    <!-- Products will be dynamically added here -->
+    {% for product in products %}
+    <div class="product-card" data-category="{{ product.category }}">
+      {% if product.thumbnail %}
+      <div class="im">
+      <img src="{{ product.thumbnail.url }}" alt="{{ product.brand_name }}" height="300px" width="100px">
+    </div>
+      {% else %}
+        <p>No Thumbnail Available</p>
+      {% endif %}
+      <p><strong>{{ product.brand_name }}</strong></p>
+      <p>{{ product.category }}</p>
+      <p>Stocks: {{ product.stocks }}</p>
+      <p>Description: {{ product.product_description }}</p>
+      <p>Price: {{ product.price }}</p>
+      <p>quantity: {{ product.price_per_unit }}</p>
+
+<!-- product_detail.html -->
+
+<form method="post" action="{% url 'add_to_cart' product.id %}">
+    {% csrf_token %}
+
+    <button type="submit">Add to Cart</button>
+</form>
+    </div>
+    {% endfor %}
+    
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Function to display products when category is clicked
+    function displayProducts(category) {
+      var productCards = document.querySelectorAll('.product-card');
+      productCards.forEach(function(card) {
+        if (category === 'All' || card.dataset.category === category) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // Event listener for category clicks
+    var categoryLinks = document.querySelectorAll('.category');
+    categoryLinks.forEach(function(link) {
+      link.addEventListener('click', function(event) {
+        event.preventDefault();
+        var category = this.getAttribute('data-category');
+        displayProducts(category);
+      });
+    });
+
+    // Event listener for profile button click
+    var profileBtn = document.querySelector('.profile-btn');
+    profileBtn.addEventListener('click', function() {
+      // Add functionality to update profile
+      console.log('Update Profile');
+    });
+
+    // Event listener for logout button click
+    var logoutBtn = document.querySelector('.logout-btn'); 
+    logoutBtn.addEventListener('click', function() {
+      // Add functionality to logout
+      console.log('Logout');
+    });
+  });
+</script>
+</body>
+</html>

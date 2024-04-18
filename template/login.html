@@ -1,0 +1,162 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2; /* Grey background color */
+            background-image: url("{% static 'img/planet.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Stylish navigation bar */
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+
+        .navbar a {
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        /* Stylish registration form */
+        .login-container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            margin: auto;
+            margin-top: 150px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        /* Style placeholders as labels */
+        input[type="email"],
+        input[type="password"] {
+            width: 95%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        input[type="email"]::placeholder,
+        input[type="password"]::placeholder {
+            color: #555;
+            font-weight: bold;
+        }
+
+        .error-message {
+            color: red;
+        }
+
+        .submit-btn {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .success-message {
+            color: green;
+        }
+
+        /* Style the "Don't have an account?" message */
+        .message {
+            color: #555;
+        }
+
+        .navbar-text {
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Stylish navbar with logo -->
+    <div class="navbar">
+        <div class="navbar-text">
+            Welcome to BuildNest
+        </div>
+    </div>
+
+    <!-- Stylish login form -->
+    <div class="login-container">
+       
+        <h2>Login</h2>
+        <form id="login-form" method="POST">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <input type="email" id="email" name="email" placeholder="Email" required>
+                <span id="username-error" class="error-message"></span>
+            </div>
+            
+            <div class="form-group">
+                <input type="password" id="password" name="password" placeholder="Password" required>
+                <span id="password-error" class="error-message"></span>
+            </div>
+            
+            <button type="submit" class="submit-btn" id="login-btn">Login</button>
+            <span id="success-message" class="success-message"></span>
+        </form>
+        
+        <!-- Display login failed message -->
+        {% if error_message %}
+            <div class="error-message">{{error_message}}</div>
+        {% endif %}
+        <p class="forgot-password"><a href="{% url "password_reset" %}">Forgot Password?</a></p>
+        <p class="message">Don't have an account? <a href="{% url 'signup' %}">Register</a></p>
+    </div>
+
+    <script>
+        function togglePasswordVisibility() {
+            var passwordInput = document.getElementById("password");
+            var toggleButton = document.getElementById("togglePassword");
+            
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                toggleButton.textContent = "Hide Password";
+            } else {
+                passwordInput.type = "password";
+                toggleButton.textContent = "Show Password";
+            }
+        }
+    </script>
+</body>
+</html>

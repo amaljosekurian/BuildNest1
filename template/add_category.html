@@ -1,0 +1,92 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Category</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-image: url("{% static 'img/category.jpg' %}");
+    background-size:cover;
+    background-position: center;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .container {
+    width: 400px;
+    height: 200px; /* Set the height equal to width to make it square */
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.8); /* Apply background color with opacity */
+    backdrop-filter: blur(10px); /* Apply backdrop filter for blurring effect */
+    border-radius: 20px; /* Add rounded corners */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #007bff; /* Vibrant blue */
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333; /* Dark gray */
+  }
+
+  input[type="text"] {
+    width: calc(100% - 20px); /* Adjust width to account for padding */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px; /* Rounded corners */
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+    margin-bottom: 10px;
+  }
+
+  input[type="text"]:focus {
+    border-color: #007bff; /* Vibrant blue on focus */
+  }
+
+  button {
+    width: calc(100% - 20px); /* Adjust width to account for padding */
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 10px; /* Rounded corners */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  button:hover {
+    background-color: #0056b3; /* Darker shade of blue on hover */
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h2>Add Category</h2>
+  <form action="#" method="post">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="category_name">Category Name:</label>
+      <input type="text" id="category_name" name="category_name" required>
+    </div>
+    <button type="submit">Add</button>
+  </form>
+</div>
+</body>
+</html>

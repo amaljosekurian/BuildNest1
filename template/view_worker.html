@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workers</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #007bff; /* Vibrant blue */
+        }
+
+        .container {
+            width: 100%; /* Set width to 100% */
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .download-btn {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .download-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Workers</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Job Role</th>
+                    <th>State</th>
+                    <th>District</th>
+                    <th>Mobile Number</th>
+                    <th>Salary Frequency</th>
+                    <th>Salary Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for worker in workers %}
+                <tr>
+                    <td>{{ worker.name }}</td>
+                    <td>{{ worker.job_role }}</td>
+                    <td>{{ worker.state }}</td>
+                    <td>{{ worker.district }}</td>
+                    <td>{{ worker.mobile_number }}</td>
+                    <td>{{ worker.salary_frequency }}</td>
+                    <td>{{ worker.salary_amount }}</td>
+                </tr>
+                {% endfor %} 
+            </tbody>
+        </table>
+        <button onclick="downloadCSV()" class="download-btn">Download CSV</button>
+    </div>
+
+    <script>
+        function downloadCSV() {
+            var table = document.querySelector('table');
+            var rows = table.querySelectorAll('tr');
+            var headings = [];
+            table.querySelectorAll('th').forEach(function(th) {
+                headings.push(th.textContent);
+            });
+            
+            var csvContent = headings.join(',') + '\n';
+            
+            rows.forEach(function(row) {
+                var rowData = [];
+                row.querySelectorAll('td').forEach(function(cell) {
+                    rowData.push(cell.textContent);
+                });
+                csvContent += rowData.join(',') + '\n';
+            });
+            
+            var blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            if (navigator.msSaveBlob) {
+                navigator.msSaveBlob(blob, 'workers.csv');
+            } else {
+                var link = document.createElement('a');
+                if (link.download !== undefined) {
+                    var url = URL.createObjectURL(blob);
+                    link.setAttribute('href', url);
+                    link.setAttribute('download', 'workers.csv');
+                    link.style.visibility = 'hidden';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
